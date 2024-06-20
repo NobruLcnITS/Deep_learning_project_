@@ -1,41 +1,47 @@
-import glob
-from os.path import basename
+import matplotlib.pyplot as plt
+import matplotlib.image as mpimg
+import sklearn  
+from sklearn.model_selection import train_test_split, KFold, RandomizedSearchCV, GridSearchCV
+from sklearn.preprocessing import OneHotEncoder, StandardScaler
+from sklearn.linear_model import LinearRegression, Ridge
+from sklearn.pipeline import Pipeline
+from sklearn.compose import ColumnTransformer
+from sklearn.metrics import mean_absolute_error, mean_absolute_percentage_error, make_scorer
+from keras import layers, metrics, optimizers, models, losses, utils
+from keras.preprocessing import image_dataset_from_directory
+from keras import Sequential
+from keras.layers import Conv2D, MaxPooling2D, Flatten, Dense
+import matplotlib.pyplot as plt
+
+from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay
+import numpy as np  
 from PIL import Image
-import numpy as np
-import pandas as pd
-from sklearn.model_selection import train_test_split
+import glob
 
-def conta_immagini(image_path: str) -> int:
-    return len(glob.glob(f'{image_path}/*.png'))
 
-# Carica le immagini e le etichette
-def carica_immagini(image_folder: str):
-    image_paths = glob.glob(f'{image_folder}/*.png')
-    images = []
-    labels = []
-    for path in image_paths:
-        img = Image.open(path)
-        img_array = np.array(img)
-        images.append(img_array)
-        
-        # Estrai la label dal nome del file, se necessario
-        label = basename(path).split('_')[0]  # Questo è solo un esempio, modifica secondo il tuo caso
-        labels.append(label)
-    
-    return np.array(images), np.array(labels)
+print('Processing....')
 
-train_folder = r'./Data/dataset'
+dir = r"./Data\LEGO brick images v1"
+df_train,df_test= image_dataset_from_directory(
+    dir,
+    color_mode="grayscale",
+    image_size=(200, 200),
+    batch_size = 128,
+    shuffle=True,
+    seed=42,
+    interpolation="bilinear",
+    validation_split=0.2,
+    subset='both'
+)
 
-# Conta il numero di immagini nella cartella
-n_train = conta_immagini(train_folder)
-print(f'Numero di immagini nel dataset: {n_train}')
 
-print('Caricamento immagini...')
-x_data, y_data = carica_immagini(train_folder)
+print(df_train.class_names)
 
-# Dividi i dati in set di addestramento e di test
-x_train, x_test, y_train, y_test = train_test_split(x_data, y_data, test_size=0.2, random_state=42)
+print('Fine')
 
-# Esempio per visualizzare una delle immagini di addestramento
-Image.fromarray(x_train[0]).show()
-print('Fine caricamento')
+
+
+
+
+
+

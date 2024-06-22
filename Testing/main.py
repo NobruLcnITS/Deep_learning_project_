@@ -8,21 +8,21 @@ from sklearn.pipeline import Pipeline
 from sklearn.compose import ColumnTransformer
 from sklearn.metrics import mean_absolute_error, mean_absolute_percentage_error, make_scorer
 from keras import layers, metrics, optimizers, models, losses, utils
-from keras.preprocessing import image_dataset_from_directory
+from keras import preprocessing as pre
 from keras import Sequential
-from keras.layers import Conv2D, MaxPooling2D, Flatten, Dense
+from keras import layers as lay
 import matplotlib.pyplot as plt
 
 from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay
 import numpy as np  
 from PIL import Image
 import glob
-
+import genv
 
 print('Processing....')
 
 dir = r"./Data\LEGO brick images v1"
-df_train,df_test= image_dataset_from_directory(
+df_train,df_test= pre.image_dataset_from_directory(
     dir,
     color_mode="grayscale",
     image_size=(200, 200),

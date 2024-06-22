@@ -1,0 +1,7 @@
+/Data/Collada models/*.dae
+/Data/dataset/*.png
+/Data/LEGO brick images v1/*/*.png
+/Data/Collada models/maps/bump/*.png
+/Data/validation.txt/
+/Data/dataset/*.png
+/cudnn-windows-x86_64-9.2.0.82_cuda12-archive/*

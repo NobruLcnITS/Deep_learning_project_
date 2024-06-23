@@ -1,20 +1,11 @@
 import matplotlib.pyplot as plt
-import sklearn  
-from sklearn.model_selection import train_test_split, KFold, RandomizedSearchCV, GridSearchCV
-from sklearn.preprocessing import OneHotEncoder, StandardScaler
-from sklearn.linear_model import LinearRegression, Ridge
-from sklearn.pipeline import Pipeline
-from sklearn.compose import ColumnTransformer
-from sklearn.metrics import mean_absolute_error, mean_absolute_percentage_error, make_scorer
 from keras import preprocessing as pre
 from keras import Sequential
 from keras import layers as lay
-from keras import layers, metrics, optimizers, models, losses, utils
-import numpy as np  
-import tensorflow as tf
+import numpy as np
 
 
-dir = r"C:\Users\BrunoLuciano\OneDrive - ITS Angelo Rizzoli\Documents\Deep_learning_project\Data\LEGO brick images v1"
+dir = r".\Data\LEGO brick images v1"
 
 df_train, df_val = pre.image_dataset_from_directory(
     directory = dir,
@@ -82,7 +73,7 @@ plt.legend()
 plt.show()
 
 
-model.save(filepath=r'C:\Users\BrunoLuciano\OneDrive - ITS Angelo Rizzoli\Documents\Deep_learning_project\model\lego.h5')
+model.save(filepath=r'.\model\lego.h5')
 
 
 for images, labels in df_val:

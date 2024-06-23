@@ -13,11 +13,10 @@ from keras import layers, metrics, optimizers, models, losses, utils
 import numpy as np  
 import tensorflow as tf
 
-sklearn.set_config(transform_output="pandas")
 
-dir = r"C:\Users\bruno\OneDrive\Documenti\Deep_learning_project\Data\LEGO brick images v1"
+dir = r"C:\Users\BrunoLuciano\OneDrive - ITS Angelo Rizzoli\Documents\Deep_learning_project\Data\LEGO brick images v1"
 
-df, df_val = pre.image_dataset_from_directory(
+df_train, df_val = pre.image_dataset_from_directory(
     directory = dir,
     labels='inferred', 
     label_mode='categorical',
@@ -62,7 +61,7 @@ epoche = 40
 
 model.summary()
     
-history = model.fit(df, epochs=epoche, validation_data=df_val, batch_size=32)
+history = model.fit(df_train, epochs=epoche, validation_data=df_val, batch_size=32)
 
 # Accuratezza
 plt.plot(history.history['accuracy'], label='Training Accuracy')
@@ -83,18 +82,18 @@ plt.legend()
 plt.show()
 
 
-model.save(filepath=r'C:\Users\bruno\OneDrive\Documenti\Deep_learning_project\model\lego.h5')
+model.save(filepath=r'C:\Users\BrunoLuciano\OneDrive - ITS Angelo Rizzoli\Documents\Deep_learning_project\model\lego.h5')
 
 
-for images, labels in df_val.take(1):
+for images, labels in df_val:
     predictions = model.predict(images)
     print("Predictions:\n", predictions)
     print("True Labels:\n", labels.numpy())
 
-class_names = df.class_names
+class_names = df_train.class_names
 
 plt.figure(figsize=(10, 10))
-for images, labels in df_val.take(1):   
+for images, labels in df_val:   
     predictions = model.predict(images)
     for i in range(9):
         ax = plt.subplot(3, 3, i + 1)

@@ -4,34 +4,56 @@ from keras.layers import Conv2D, MaxPooling2D, Flatten, Dense, Dropout, BatchNor
 from keras.callbacks import EarlyStopping
 import numpy as np
 import pandas as pd
-from keras.preprocessing import image_dataset_from_directory
+from keras.preprocessing.image import ImageDataGenerator
+import tensorflow as tf
+from sklearn.model_selection import train_test_split
+
+physical_devices = tf.config.list_physical_devices('GPU')
+if len(physical_devices) > 0:
+    tf.config.experimental.set_memory_growth(physical_devices[0], True)
 
 dir = r"./Data/Dataset_corretto"
    
-dataset, df_val = image_dataset_from_directory(
-    directory = dir,
-    labels='inferred', 
-    label_mode='categorical',
-    color_mode="grayscale",
-    image_size=(400, 400),
-    batch_size = 64,
-    shuffle=True,
-    seed=42,
-    interpolation="bilinear",
-    validation_split=0.2,
-    subset='both'
+image_size = (400, 400)
+batch_size = 128
+validation_split = 0.2
+train_test_split_ratio = 0.2 
+
+datagen = ImageDataGenerator(
+    rescale=1./255,
+    validation_split=validation_split
 )
 
-dataset_size = len(dataset)
-print(f"Dataset size: {dataset_size}")
+dataset = datagen.flow_from_directory(
+    dir,
+    target_size=image_size,
+    batch_size=batch_size,
+    color_mode='grayscale',
+    class_mode='categorical',
+    shuffle=True,
+    subset='training',
+    seed=42,
+    interpolation="bilinear"
+)
 
-train_size = int(0.8 * dataset_size)
-test_size = dataset_size - train_size
-print(f"Train size: {train_size}, Test size: {test_size}")
+df_val = datagen.flow_from_directory(
+    dir,
+    target_size=image_size,
+    batch_size=batch_size,
+    color_mode='grayscale',
+    class_mode='categorical',
+    shuffle=True,
+    subset='validation',
+    seed=42,
+    interpolation="bilinear"
+)
 
-train_set = dataset.take(train_size)
+filepaths = dataset.filepaths
+labels = dataset.classes
 
-test_set = dataset.skip(test_size)
+# Split del set di addestramento per creare il set di test
+train_paths, test_paths, train_labels, test_labels = train_test_split(
+    filepaths, labels, test_size=train_test_split_ratio, stratify=labels, random_state=42)
 
 kernel_size = (3,3)
 
@@ -50,9 +72,7 @@ model = Sequential([
 
      Flatten(),
 
-     Dense(100, activation='relu'),
-     Dropout(0.3), 
-     Dense(300, activation='relu'),
+     Dense(200, activation='relu'),
      Dropout(0.2),
 
      Dense(100, activation='relu'),
@@ -60,6 +80,7 @@ model = Sequential([
 
      Dense(50, activation='softmax')
 ])
+
 
 model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
 
@@ -98,8 +119,8 @@ plt.show()
 model.save(filepath=r'.\model\lego.keras')
 
 
-images = np.concatenate([batch[0].numpy() for batch in test_set], axis=0)
-labels = np.concatenate([batch[1].numpy() for batch in test_set], axis=0)
+images = np.concatenate([batch[0].numpy() for batch in test_paths], axis=0)
+labels = np.concatenate([batch[1].numpy() for batch in test_paths], axis=0)
 
 print("Images shape:", images.shape)
 print("Labels shape:", labels.shape)
@@ -108,7 +129,7 @@ y_hat = model.predict(images)
 print("Predictions:", y_hat)
 
 
-for images, labels in test_set.take(1):
+for images, labels in test_paths.take(1):
     y_hat = model.predict(images)
     print("Predictions:\n", y_hat)
     print("True Labels:\n", labels)
@@ -117,7 +138,7 @@ class_names = dataset.class_names
 
 plt.figure(figsize=(10, 10))
 
-for images, labels in test_set.take(1):   
+for images, labels in test_paths.take(1):   
     y_hat = model.predict(images)
     for i in range(9):
         ax = plt.subplot(3, 3, i + 1)

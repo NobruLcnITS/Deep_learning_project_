@@ -5,7 +5,7 @@ from keras import models as mdl
 import matplotlib.pyplot as plt
 
 
-image_path = r'img\lego.jpg'
+image_path = r'img\lego4.jpg'
 
 
 img = cv2.imread(image_path)
@@ -34,6 +34,7 @@ model = mdl.load_model(r'.\model\lego.keras')
 
 predictions = model.predict(img_batch)
 
+print(predictions)
 
 predicted_class = np.argmax(predictions, axis=-1)
 print(f'Predicted class: {predicted_class[0]}')

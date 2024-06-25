@@ -7,17 +7,16 @@ from keras.models import load_model
 import numpy as np
 import pandas as pd
 from sklearn.model_selection import train_test_split
-import cv2
-
-dir = r".\Data\LEGO brick images v1"
 
 
+dir = r"./Data/Dataset_corretto"
+   
 dataset, df_val = image_dataset_from_directory(
     directory = dir,
     labels='inferred', 
     label_mode='categorical',
     color_mode="grayscale",
-    image_size=(200, 200),
+    image_size=(400, 400),
     batch_size = 128,
     shuffle=True,
     seed=42,
@@ -37,32 +36,32 @@ train_set = dataset.take(train_size)
 
 test_set = dataset.skip(test_size)
 
-
+kernel_size = (3,3)
 
 model = Sequential([
-     Conv2D(filters=16, kernel_size=(3,3), activation='relu', input_shape=(200, 200, 1)),
+     Conv2D(filters=16, kernel_size=kernel_size, activation='relu', input_shape=(400, 400, 1)),
      MaxPooling2D(2,2),
 
-     Conv2D(filters=32, kernel_size=(3,3), activation='relu'),
+     Conv2D(filters=32, kernel_size=kernel_size, activation='relu'),
      MaxPooling2D(2,2),
 
-     Conv2D(filters=64, kernel_size=(3,3), activation='relu'),
+     Conv2D(filters=64, kernel_size=kernel_size, activation='relu'),
      MaxPooling2D(2,2),
 
-     Conv2D(filters=128, kernel_size=(3,3), activation='relu'),
+     Conv2D(filters=128, kernel_size=kernel_size, activation='relu'),
      MaxPooling2D(2,2),
 
      Flatten(),
 
-     Dense(128, activation='relu'),
+     Dense(100, activation='relu'),
      Dropout(0.3), 
-     Dense(64, activation='relu'),
+     Dense(300, activation='relu'),
      Dropout(0.2),
 
-     Dense(32, activation='relu'),
-   
+     Dense(100, activation='relu'),
+     Dropout(0.1),
 
-     Dense(16, activation='softmax')
+     Dense(50, activation='softmax')
 ])
 
 model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])

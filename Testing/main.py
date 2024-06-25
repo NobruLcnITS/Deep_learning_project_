@@ -55,13 +55,12 @@ model = Sequential([
      Flatten(),
 
      Dense(128, activation='relu'),
-     Dropout(0.3),  
-
+     Dropout(0.3), 
      Dense(64, activation='relu'),
      Dropout(0.2),
 
      Dense(32, activation='relu'),
-     Dropout(0.1),
+   
 
      Dense(16, activation='softmax')
 ])

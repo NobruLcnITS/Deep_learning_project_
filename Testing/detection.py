@@ -29,7 +29,7 @@ img_batch = np.expand_dims(img_normalized, axis=0)
 img_batch = np.expand_dims(img_batch, axis=-1)
 
 
-model = mdl.load_model(r'.\model\lego.h5')
+model = mdl.load_model(r'.\model\lego.keras')
 
 
 predictions = model.predict(img_batch)

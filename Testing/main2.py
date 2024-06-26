@@ -14,7 +14,7 @@ if len(physical_devices) > 0:
 
 dir = r"./Data/Dataset_corretto"
    
-image_size = (400, 400)
+image_size = (200, 200)
 batch_size = 64
 validation_split = 0.2
 train_test_split_ratio = 0.2 
@@ -70,16 +70,18 @@ model = Sequential([
      Conv2D(filters=128, kernel_size=kernel_size, activation='relu'),
      MaxPooling2D(2,2),
 
-     BatchNormalization(),
      Flatten(),
 
-     Dense(300, activation='relu'),
-     Dropout(0.3),
-
      Dense(200, activation='relu'),
-     Dropout(0.2),
-
+     Dropout(0.3), 
+     
      Dense(100, activation='relu'),
+     Dropout(0.2), 
+     
+     Dense(50, activation='relu'),
+     Dropout(0.1),
+     Dense(25, activation='relu'),
+
 
      Dense(50, activation='softmax')
 ])

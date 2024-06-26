@@ -4,7 +4,9 @@ from keras.layers import Conv2D, MaxPooling2D, Flatten, Dense, Dropout, BatchNor
 from keras.callbacks import EarlyStopping
 import numpy as np
 import pandas as pd
+from keras.models import load_model
 from keras.preprocessing import image_dataset_from_directory
+import os
 
 dir = r"./Data/Dataset_corretto"
    
@@ -13,7 +15,7 @@ dataset, df_val = image_dataset_from_directory(
     labels='inferred', 
     label_mode='categorical',
     color_mode="grayscale",
-    image_size=(400, 400),
+    image_size=(200, 200),
     batch_size = 64,
     shuffle=True,
     seed=42,
@@ -36,7 +38,7 @@ test_set = dataset.skip(test_size)
 kernel_size = (3,3)
 
 model = Sequential([
-     Conv2D(filters=16, kernel_size=kernel_size, activation='relu', input_shape=(400, 400, 1)),
+     Conv2D(filters=16, kernel_size=kernel_size, activation='relu', input_shape=(200, 200, 1)),
      MaxPooling2D(2,2),
 
      Conv2D(filters=32, kernel_size=kernel_size, activation='relu'),
@@ -63,7 +65,7 @@ model = Sequential([
 
 model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
 
-epoche = 50
+epoche = 40
 
 model.summary()
 
@@ -93,10 +95,12 @@ plt.xlabel('Epoch')
 plt.ylabel('Loss')
 plt.legend()
 plt.show()
+model.save(filepath=r'./model\lego.keras')
 
+# print(os.path.exists('./model/lego.keras'))
 
-model.save(filepath=r'.\model\lego.keras')
-
+# path = './model\lego_vecchio.h5'
+# model = load_model(path)
 
 images = np.concatenate([batch[0].numpy() for batch in test_set], axis=0)
 labels = np.concatenate([batch[1].numpy() for batch in test_set], axis=0)

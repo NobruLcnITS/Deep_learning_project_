@@ -4,7 +4,6 @@ from keras.layers import Conv2D, MaxPooling2D, Flatten, Dense, Dropout, BatchNor
 from keras.callbacks import EarlyStopping
 import numpy as np
 import pandas as pd
-from keras.models import load_model
 from keras.preprocessing import image_dataset_from_directory
 import os
 
@@ -24,26 +23,12 @@ dataset, df_val = image_dataset_from_directory(
     subset='both'
 )
 
-dataset_size = len(dataset)
-print(f"Dataset size: {dataset_size}")
-
-train_size = int(0.8 * dataset_size)
-test_size = dataset_size - train_size
-print(f"Train size: {train_size}, Test size: {test_size}")
-
-train_set = dataset.take(train_size)
-
-test_set = dataset.skip(test_size)
-
 kernel_size = (3,3)
 
 model = Sequential([
-    
-     CenterCrop(200, 200),
-     Conv2D(filters=16, kernel_size=kernel_size, activation='relu', input_shape=(200, 200, 1)),
-     
+     Conv2D(filters=16, kernel_size=kernel_size, activation='relu', input_shape=(400, 400, 1)),
      MaxPooling2D(2,2),
-
+    
      Conv2D(filters=32, kernel_size=kernel_size, activation='relu'),
      MaxPooling2D(2,2),
 
@@ -56,15 +41,10 @@ model = Sequential([
      Flatten(),
 
      Dense(200, activation='relu'),
-     Dropout(0.3), 
-     
+     Dropout(0.2),
+
      Dense(100, activation='relu'),
      Dropout(0.2), 
-     
-     Dense(50, activation='relu'),
-     Dropout(0.1),
-     Dense(25, activation='relu'),
-
 
      Dense(50, activation='softmax')
 ])
@@ -82,7 +62,7 @@ early_stopping = EarlyStopping(
     )
 
     
-history = model.fit(dataset, epochs=epoche, validation_data=df_val, batch_size=32,callbacks = early_stopping)
+history = model.fit(dataset, epochs=epoche, validation_data=df_val, batch_size=64,callbacks = early_stopping)
 
 # Accuratezza
 plt.plot(history.history['accuracy'], label='Training Accuracy')
@@ -101,12 +81,20 @@ plt.xlabel('Epoch')
 plt.ylabel('Loss')
 plt.legend()
 plt.show()
+
 model.save(filepath=r'./model\lego.keras')
 
-# print(os.path.exists('./model/lego.keras'))
+dataset_size = len(dataset)
+print(f"Dataset size: {dataset_size}")
 
-# path = './model\lego_vecchio.h5'
-# model = load_model(path)
+train_size = int(0.8 * dataset_size)
+test_size = dataset_size - train_size
+print(f"Train size: {train_size}, Test size: {test_size}")
+
+train_set = dataset.take(train_size)
+
+test_set = dataset.skip(test_size)
+
 
 images = np.concatenate([batch[0].numpy() for batch in test_set], axis=0)
 labels = np.concatenate([batch[1].numpy() for batch in test_set], axis=0)

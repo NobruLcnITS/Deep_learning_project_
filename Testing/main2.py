@@ -15,7 +15,7 @@ if len(physical_devices) > 0:
 dir = r"./Data/Dataset_corretto"
    
 image_size = (400, 400)
-batch_size = 128
+batch_size = 64
 validation_split = 0.2
 train_test_split_ratio = 0.2 
 
@@ -70,13 +70,16 @@ model = Sequential([
      Conv2D(filters=128, kernel_size=kernel_size, activation='relu'),
      MaxPooling2D(2,2),
 
+     BatchNormalization(),
      Flatten(),
+
+     Dense(300, activation='relu'),
+     Dropout(0.3),
 
      Dense(200, activation='relu'),
      Dropout(0.2),
 
      Dense(100, activation='relu'),
-     Dropout(0.1),
 
      Dense(50, activation='softmax')
 ])
@@ -84,18 +87,18 @@ model = Sequential([
 
 model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
 
-epoche = 50
+epoche = 70
 
 model.summary()
 
 early_stopping = EarlyStopping(
-        monitor='accuracy',
+        monitor='val_accuracy',
         patience=5,
         restore_best_weights=True
     )
 
     
-history = model.fit(dataset, epochs=epoche, validation_data=df_val, batch_size=32,callbacks = early_stopping)
+history = model.fit(dataset, epochs=epoche, validation_data=df_val, batch_size=batch_size,callbacks = early_stopping)
 
 # Accuratezza
 plt.plot(history.history['accuracy'], label='Training Accuracy')
@@ -119,8 +122,8 @@ plt.show()
 model.save(filepath=r'.\model\lego.keras')
 
 
-images = np.concatenate([batch[0].numpy() for batch in test_paths], axis=0)
-labels = np.concatenate([batch[1].numpy() for batch in test_paths], axis=0)
+images = np.concatenate([batch[0].numpy() for batch in test_labels], axis=0)
+labels = np.concatenate([batch[1].numpy() for batch in test_labels], axis=0)
 
 print("Images shape:", images.shape)
 print("Labels shape:", labels.shape)

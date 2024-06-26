@@ -58,7 +58,7 @@ train_paths, test_paths, train_labels, test_labels = train_test_split(
 kernel_size = (3,3)
 
 model = Sequential([
-     Conv2D(filters=16, kernel_size=kernel_size, activation='relu', input_shape=(400, 400, 1)),
+     Conv2D(filters=16, kernel_size=kernel_size, activation='relu', input_shape=(200, 200, 1)),
      MaxPooling2D(2,2),
 
      Conv2D(filters=32, kernel_size=kernel_size, activation='relu'),

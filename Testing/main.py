@@ -1,6 +1,6 @@
 import matplotlib.pyplot as plt
 from keras import Sequential
-from keras.layers import Conv2D, MaxPooling2D, Flatten, Dense, Dropout, BatchNormalization
+from keras.layers import Conv2D, MaxPooling2D, Flatten, Dense, Dropout, BatchNormalization, CenterCrop
 from keras.callbacks import EarlyStopping
 import numpy as np
 import pandas as pd
@@ -15,7 +15,7 @@ dataset, df_val = image_dataset_from_directory(
     labels='inferred', 
     label_mode='categorical',
     color_mode="grayscale",
-    image_size=(200, 200),
+    image_size=(400, 400),
     batch_size = 64,
     shuffle=True,
     seed=42,
@@ -38,7 +38,10 @@ test_set = dataset.skip(test_size)
 kernel_size = (3,3)
 
 model = Sequential([
+    
+     CenterCrop(200, 200),
      Conv2D(filters=16, kernel_size=kernel_size, activation='relu', input_shape=(200, 200, 1)),
+     
      MaxPooling2D(2,2),
 
      Conv2D(filters=32, kernel_size=kernel_size, activation='relu'),

@@ -4,25 +4,54 @@ from keras.layers import Conv2D, MaxPooling2D, Flatten, Dense, Dropout, BatchNor
 from keras.callbacks import EarlyStopping
 import numpy as np
 import pandas as pd
+from keras.models import load_model
 from keras.preprocessing import image_dataset_from_directory
+from tensorflow.data import AUTOTUNE
 import os
 
 if __name__ == '__main__':
-    dir = r"./Data/Dataset_corretto"
     
-    dataset, df_val = image_dataset_from_directory(
-        directory = dir,
+    train_set_path = r"./Data/Train_set"
+    test_set_path = r"./Data/Test_set"
+    valid_set_path = r"./Data/Val_set"
+    
+    batch_size = 32
+    train_set = image_dataset_from_directory(
+        directory = train_set_path,
         labels='inferred', 
         label_mode='categorical',
         color_mode="grayscale",
         image_size=(400, 400),
-        batch_size = 64,
+        batch_size = batch_size,
+        shuffle=True,
+        seed=42,
+        interpolation="bilinear"
+    )
+    
+    test_set = image_dataset_from_directory(
+        directory = test_set_path,
+        labels='inferred',
+        label_mode='categorical',
+        color_mode="grayscale",
+        image_size=(400, 400),
+        batch_size = batch_size,
+        shuffle=True,
+        seed=42,
+        interpolation="bilinear"
+    )
+    
+    valid_set= image_dataset_from_directory(
+        directory = valid_set_path,
+        labels='inferred',
+        label_mode='categorical',
+        color_mode="grayscale",
+        image_size=(400, 400),
+        batch_size = batch_size,
         shuffle=True,
         seed=42,
         interpolation="bilinear",
-        validation_split=0.2,
-        subset='both'
     )
+    
 
     kernel_size = (3,3)
 
@@ -58,12 +87,16 @@ if __name__ == '__main__':
 
     early_stopping = EarlyStopping(
             monitor='accuracy',
-            patience=5,
+            patience=3,
             restore_best_weights=True
-        )
-
+    )
+    
+    AUTOTUNE = AUTOTUNE
+    
+    train_ds = train_set.cache().prefetch(buffer_size=AUTOTUNE)
+    valid_ds = valid_set.cache().prefetch(buffer_size=AUTOTUNE) 
         
-    history = model.fit(dataset, epochs=epoche, validation_data=df_val, batch_size=64,callbacks = early_stopping)
+    history = model.fit(train_ds, epochs=epoche, validation_data=valid_ds, batch_size=batch_size,callbacks = early_stopping)
 
     # Accuratezza
     plt.plot(history.history['accuracy'], label='Training Accuracy')
@@ -83,19 +116,12 @@ if __name__ == '__main__':
     plt.legend()
     plt.show()
 
+
     model.save(filepath=r'./model\lego.keras')
 
-    dataset_size = len(dataset)
-    print(f"Dataset size: {dataset_size}")
-
-    train_size = int(0.8 * dataset_size)
-    test_size = dataset_size - train_size
-    print(f"Train size: {train_size}, Test size: {test_size}")
-
-    train_set = dataset.take(train_size)
-
-    test_set = dataset.skip(test_size)
-
+    #model = load_model(r'./model\lego_vecchio.h5')
+     
+ 
 
     images = np.concatenate([batch[0].numpy() for batch in test_set], axis=0)
     labels = np.concatenate([batch[1].numpy() for batch in test_set], axis=0)
@@ -112,7 +138,7 @@ if __name__ == '__main__':
         print("Predictions:\n", y_hat)
         print("True Labels:\n", labels)
 
-    class_names = dataset.class_names
+    class_names = train_set.class_names
 
     plt.figure(figsize=(10, 10))
 

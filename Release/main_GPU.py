@@ -132,37 +132,38 @@ if __name__ == '__main__':
     # print('Modello salvato')
     
     model = load_model(r'./model/lego.keras')
+    
 
-    images = np.concatenate([batch[0] for batch in test_set], axis=0)
-    labels = np.concatenate([batch[1] for batch in test_set], axis=0)
+    # images = np.concatenate([batch[0] for batch in test_set], axis=0)
+    # labels = np.concatenate([batch[1] for batch in test_set], axis=0)
 
-    print("Images shape:", images.shape)
-    print("Labels shape:", labels.shape)
+    # print("Images shape:", images.shape)
+    # print("Labels shape:", labels.shape)
 
-    y_hat = model.predict(images)
-    print("Predictions:", y_hat)
+    # y_hat = model.predict(images)
+    # print("Predictions:", y_hat)
 
 
-    for images, labels in test_set:
-        y_hat = model.predict(images)
-        print("Predictions:\n", y_hat)
-        print("True Labels:\n", labels)
+    # for images, labels in test_set:
+    #     y_hat = model.predict(images)
+    #     print("Predictions:\n", y_hat)
+    #     print("True Labels:\n", labels)
 
-    # aggiunge la label di ogni classe in un array 
-    class_names =[]
-    for nome_cartella in os.listdir(r'Data\Train_set'):
-        class_names.append(nome_cartella)
+    # # aggiunge la label di ogni classe in un array 
+    # class_names =[]
+    # for nome_cartella in os.listdir(r'Data\Train_set'):
+    #     class_names.append(nome_cartella)
 
-    plt.figure(figsize=(10, 10))
+    # plt.figure(figsize=(10, 10))
 
-    for images, labels in test_set:   
-        y_hat = model.predict(images)
-        for i in range(9):
-            ax = plt.subplot(3, 3, i + 1)
-            plt.imshow(images[i].astype("uint8"), cmap='gray')
-            plt.title(f"Pred: {class_names[np.argmax(y_hat[i])]} \n True: {class_names[np.argmax(labels[i])]}")
-            plt.axis("off")
+    # for images, labels in test_set:   
+    #     y_hat = model.predict(images)
+    #     for i in range(9):
+    #         ax = plt.subplot(3, 3, i + 1)
+    #         plt.imshow(images[i].astype("uint8"), cmap='gray')
+    #         plt.title(f"Pred: {class_names[np.argmax(y_hat[i])]} \n True: {class_names[np.argmax(labels[i])]}")
+    #         plt.axis("off")
             
-    plt.show()
+    # plt.show()
 
 

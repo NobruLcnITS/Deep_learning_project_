@@ -120,8 +120,7 @@ if __name__ == '__main__':
     # model.save(filepath=r'./model\lego.keras')
 
     model = load_model(r'./model/lego.keras')
-     
- 
+    
 
     images = np.concatenate([batch[0].numpy() for batch in test_set], axis=0)
     labels = np.concatenate([batch[1].numpy() for batch in test_set], axis=0)

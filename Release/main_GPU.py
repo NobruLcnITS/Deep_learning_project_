@@ -21,7 +21,7 @@ if __name__ == '__main__':
     test_set_path = r"./Data/Test_set"
     valid_set_path = r"./Data/Val_set"
     
-    image_size = (200, 200)
+    image_size = (300, 300)
     batch_size = 32
     validation_split = 0.2
     trainin_split = 0.8
@@ -31,16 +31,15 @@ if __name__ == '__main__':
         rescale=1./255,
         validation_split=validation_split
     )
-
+    
     
     train_set = datagen.flow_from_directory(
-        directory = train_set_path,
+        directory=train_set_path,
         class_mode='categorical',
         color_mode="grayscale",
         target_size=image_size,
-        batch_size = batch_size,
+        batch_size=batch_size,
         shuffle=True,
-        seed=42,
         interpolation="bilinear"
     )
     
@@ -65,13 +64,11 @@ if __name__ == '__main__':
         seed=42,
         interpolation="bilinear",
     )
-    
-
    
     # kernel_size = (3,3)
 
     # model = Sequential([
-    #     Conv2D(filters=16, kernel_size=kernel_size, activation='relu', input_shape=(200, 200, 1)),
+    #     Conv2D(filters=16, kernel_size=kernel_size, activation='relu', input_shape=(300, 300, 1)),
     #     MaxPooling2D(2,2),
         
     #     Conv2D(filters=32, kernel_size=kernel_size, activation='relu'),
@@ -97,7 +94,7 @@ if __name__ == '__main__':
 
     # model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
 
-    # epoche = 20
+    # epoche = 30
 
     # model.summary()
 
@@ -132,38 +129,46 @@ if __name__ == '__main__':
     # print('Modello salvato')
     
     model = load_model(r'./model/lego.keras')
-    
 
-    # images = np.concatenate([batch[0] for batch in test_set], axis=0)
-    # labels = np.concatenate([batch[1] for batch in test_set], axis=0)
+    print(train_set.image_shape)
+    print(test_set.image_shape)
+    print(valid_set.image_shape)
 
-    # print("Images shape:", images.shape)
-    # print("Labels shape:", labels.shape)
+    iteratore = iter(train_set)
+    image ,label = next(iteratore)
+    # print('image',image)
+    # print('label',label)
 
-    # y_hat = model.predict(images)
-    # print("Predictions:", y_hat)
+    images = np.concatenate([batch[0] for batch in image], axis=0)
+    labels = np.concatenate([batch[1] for batch in label], axis=0)
+
+    print("Images shape:", images.shape)
+    print("Labels shape:", labels.shape)
+
+    y_hat = model.predict(images)
+    print("Predictions:", y_hat)
 
 
-    # for images, labels in test_set:
-    #     y_hat = model.predict(images)
-    #     print("Predictions:\n", y_hat)
-    #     print("True Labels:\n", labels)
+    for images, labels in test_set:
+        y_hat = model.predict(images)
+        print("Predictions:\n", y_hat)
+        print("True Labels:\n", labels)
 
-    # # aggiunge la label di ogni classe in un array 
-    # class_names =[]
-    # for nome_cartella in os.listdir(r'Data\Train_set'):
-    #     class_names.append(nome_cartella)
+    # aggiunge la label di ogni classe in un array 
+    class_names =[]
+    for nome_cartella in os.listdir(r'Data\Train_set'):
+        class_names.append(nome_cartella)
 
-    # plt.figure(figsize=(10, 10))
+    plt.figure(figsize=(10, 10))
 
-    # for images, labels in test_set:   
-    #     y_hat = model.predict(images)
-    #     for i in range(9):
-    #         ax = plt.subplot(3, 3, i + 1)
-    #         plt.imshow(images[i].astype("uint8"), cmap='gray')
-    #         plt.title(f"Pred: {class_names[np.argmax(y_hat[i])]} \n True: {class_names[np.argmax(labels[i])]}")
-    #         plt.axis("off")
+    for images, labels in zip(images,labels):   
+        y_hat = model.predict(images)
+        for i in range(9):
+            ax = plt.subplot(3, 3, i + 1)
+            plt.imshow(images[i].astype("uint8"), cmap='gray')
+            plt.title(f"Pred: {class_names[np.argmax(y_hat[i])]} \n True: {class_names[np.argmax(labels[i])]}")
+            plt.axis("off")
             
-    # plt.show()
-
+    plt.show()
+    
 

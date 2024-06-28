@@ -53,74 +53,76 @@ if __name__ == '__main__':
     )
     
 
-    # kernel_size = (3,3)
+    kernel_size = (3,3)
 
-    # model = Sequential([
-    #     Conv2D(filters=16, kernel_size=kernel_size, activation='relu', input_shape=(400, 400, 1)),
-    #     MaxPooling2D(2,2),
+    model = Sequential([
+        Conv2D(filters=16, kernel_size=kernel_size, activation='relu', input_shape=(400, 400, 1)),
+        MaxPooling2D(2,2),
         
-    #     Conv2D(filters=32, kernel_size=kernel_size, activation='relu'),
-    #     MaxPooling2D(2,2),
+        Conv2D(filters=32, kernel_size=kernel_size, activation='relu'),
+        MaxPooling2D(2,2),
 
-    #     Conv2D(filters=64, kernel_size=kernel_size, activation='relu'),
-    #     MaxPooling2D(2,2),
+        Conv2D(filters=64, kernel_size=kernel_size, activation='relu'),
+        MaxPooling2D(2,2),
 
-    #     Conv2D(filters=128, kernel_size=kernel_size, activation='relu'),
-    #     MaxPooling2D(2,2),
+        Conv2D(filters=128, kernel_size=kernel_size, activation='relu'),
+        MaxPooling2D(2,2),
 
-    #     Flatten(),
+        Flatten(),
 
-    #     Dense(200, activation='relu'),
-    #     Dropout(0.2),
+        Dense(200, activation='relu'),
+        Dropout(0.2),
 
-    #     Dense(100, activation='relu'),
-    #     Dropout(0.2), 
+        Dense(100, activation='relu'),
+        Dropout(0.2), 
 
-    #     Dense(50, activation='softmax')
-    # ])
+        Dense(50, activation='softmax')
+    ])
 
-    # model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
+    model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
 
-    # epoche = 40
+    epoche = 40
 
-    # model.summary()
+    model.summary()
 
-    # early_stopping = EarlyStopping(
-    #         monitor='accuracy',
-    #         patience=3,
-    #         restore_best_weights=True
-    # )
+    early_stopping = EarlyStopping(
+            monitor='accuracy',
+            patience=3,
+            restore_best_weights=True
+    )
     
-    # AUTOTUNE = AUTOTUNE
+    AUTOTUNE = AUTOTUNE
     
-    # train_ds = train_set.cache().prefetch(buffer_size=AUTOTUNE)
-    # valid_ds = valid_set.cache().prefetch(buffer_size=AUTOTUNE) 
+    train_ds = train_set.cache().prefetch(buffer_size=AUTOTUNE)
+    valid_ds = valid_set.cache().prefetch(buffer_size=AUTOTUNE) 
         
-    # history = model.fit(train_ds, epochs=epoche, validation_data=valid_ds, batch_size=batch_size,callbacks = early_stopping)
+    history = model.fit(train_ds, epochs=epoche, validation_data=valid_ds, batch_size=batch_size,callbacks = early_stopping)
 
-    # # Accuratezza
-    # plt.plot(history.history['accuracy'], label='Training Accuracy')
-    # plt.plot(history.history['val_accuracy'], label='Validation Accuracy')
-    # plt.title('Accuracy over epochs')
-    # plt.xlabel('Epoch')
-    # plt.ylabel('Accuracy')
-    # plt.legend()
-    # plt.show()
+    # Accuratezza
+    plt.plot(history.history['accuracy'], label='Training Accuracy')
+    plt.plot(history.history['val_accuracy'], label='Validation Accuracy')
+    plt.title('Accuracy over epochs')
+    plt.xlabel('Epoch')
+    plt.ylabel('Accuracy')
+    plt.legend()
+    plt.show()
 
-    # # Loss
-    # plt.plot(history.history['loss'], label='Training Loss')
-    # plt.plot(history.history['val_loss'], label='Validation Loss')
-    # plt.title('Loss over epochs')
-    # plt.xlabel('Epoch')
-    # plt.ylabel('Loss')
-    # plt.legend()
-    # plt.show()
+    # Loss
+    plt.plot(history.history['loss'], label='Training Loss')
+    plt.plot(history.history['val_loss'], label='Validation Loss')
+    plt.title('Loss over epochs')
+    plt.xlabel('Epoch')
+    plt.ylabel('Loss')
+    plt.legend()
+    plt.show()
 
 
-    # model.save(filepath=r'./model\lego.keras')
+    model.save(filepath=r'./model\lego.keras')
 
-    model = load_model(r'./model/lego.keras')
+    #model = load_model(r'./model/lego.keras')
     
+    filepaths = test_set.take(1)
+    print("Total batches seen:", filepaths )
 
     images = np.concatenate([batch[0].numpy() for batch in test_set], axis=0)
     labels = np.concatenate([batch[1].numpy() for batch in test_set], axis=0)

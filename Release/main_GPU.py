@@ -27,24 +27,42 @@ if __name__ == '__main__':
     trainin_split = 0.8
     train_test_split_ratio = 0.2 
 
-    datagen = ImageDataGenerator(
+    datagen_1 = ImageDataGenerator(
         rescale=1./255,
-        validation_split=validation_split,
         
     )
     
     
-    train_set = datagen.flow_from_directory(
+    train_set = datagen_1.flow_from_directory(
         directory=train_set_path,
         class_mode='categorical',
         color_mode="grayscale",
         target_size=image_size,
         batch_size=batch_size,
         shuffle=True,
-        interpolation="bilinear"
+        interpolation="bilinear",
+
     )
     
-    test_set = datagen.flow_from_directory(
+    
+    valid_set= datagen_1.flow_from_directory(
+        directory = valid_set_path,
+        class_mode='categorical',
+        color_mode="grayscale",
+        target_size=image_size,
+        batch_size = batch_size,
+        shuffle=True,
+        seed=42,
+        interpolation="bilinear",
+       
+    )
+    
+    datagen_2= ImageDataGenerator(
+        rescale=1./255,
+        
+    )
+    
+    test_set = datagen_2.flow_from_directory(
         directory = test_set_path,
         class_mode='categorical',
         color_mode="grayscale",
@@ -55,124 +73,120 @@ if __name__ == '__main__':
         interpolation="bilinear"
     )
     
-    valid_set= datagen.flow_from_directory(
-        directory = valid_set_path,
-        class_mode='categorical',
-        color_mode="grayscale",
-        target_size=image_size,
-        batch_size = batch_size,
-        shuffle=True,
-        seed=42,
-        interpolation="bilinear",
-    )
     
-    kernel_size = (3,3)
+    # kernel_size = (3,3)
 
-    model = Sequential([
-        Conv2D(filters=16, kernel_size=kernel_size, activation='relu', input_shape=(300, 300, 1)),
-        MaxPooling2D(2,2),
+    # model = Sequential([
+    #     Conv2D(filters=16, kernel_size=kernel_size, activation='relu', input_shape=(300, 300, 1)),
+    #     MaxPooling2D(2,2),
         
-        Conv2D(filters=32, kernel_size=kernel_size, activation='relu'),
-        MaxPooling2D(2,2),
+    #     Conv2D(filters=32, kernel_size=kernel_size, activation='relu'),
+    #     MaxPooling2D(2,2),
 
-        Conv2D(filters=64, kernel_size=kernel_size, activation='relu'),
-        MaxPooling2D(2,2),
+    #     Conv2D(filters=64, kernel_size=kernel_size, activation='relu'),
+    #     MaxPooling2D(2,2),
 
-        Conv2D(filters=128, kernel_size=kernel_size, activation='relu'),
-        MaxPooling2D(2,2),
+    #     Conv2D(filters=128, kernel_size=kernel_size, activation='relu'),
+    #     MaxPooling2D(2,2),
 
-        Flatten(),
+    #     Flatten(),
 
-        Dense(200, activation='relu'),
-        Dropout(0.2),
+    #     Dense(200, activation='relu'),
+    #     Dropout(0.2),
 
-        Dense(100, activation='relu'),
-        Dropout(0.3), 
+    #     Dense(100, activation='relu'),
+    #     Dropout(0.3), 
 
-        Dense(50, activation='softmax')
-    ])
+    #     Dense(50, activation='softmax')
+    # ])
 
 
-    model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
+    # model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
 
-    epoche = 30
+    # epoche = 30
 
-    model.summary()
+    # model.summary()
 
-    early_stopping = EarlyStopping(
-            monitor='val_accuracy',
-            patience=5,
-            restore_best_weights=True
-        )
+    # early_stopping = EarlyStopping(
+    #         monitor='val_accuracy',
+    #         patience=5,
+    #         restore_best_weights=True
+    #     )
     
-    history = model.fit(train_set, epochs=epoche, validation_data=valid_set, batch_size=batch_size,callbacks = early_stopping)
+    # history = model.fit(train_set, epochs=epoche, validation_data=valid_set, batch_size=batch_size,callbacks = early_stopping)
 
-    # Accuratezza
-    plt.plot(history.history['accuracy'], label='Training Accuracy')
-    plt.plot(history.history['val_accuracy'], label='Validation Accuracy')
-    plt.title('Accuracy over epochs')
-    plt.xlabel('Epoch')
-    plt.ylabel('Accuracy')
-    plt.legend()
-    plt.show()
+    # # Accuratezza
+    # plt.plot(history.history['accuracy'], label='Training Accuracy')
+    # plt.plot(history.history['val_accuracy'], label='Validation Accuracy')
+    # plt.title('Accuracy over epochs')
+    # plt.xlabel('Epoch')
+    # plt.ylabel('Accuracy')
+    # plt.legend()
+    # plt.show()
 
-    # Loss
-    plt.plot(history.history['loss'], label='Training Loss')
-    plt.plot(history.history['val_loss'], label='Validation Loss')
-    plt.title('Loss over epochs')
-    plt.xlabel('Epoch')
-    plt.ylabel('Loss')
-    plt.legend()
-    plt.show()
+    # # Loss
+    # plt.plot(history.history['loss'], label='Training Loss')
+    # plt.plot(history.history['val_loss'], label='Validation Loss')
+    # plt.title('Loss over epochs')
+    # plt.xlabel('Epoch')
+    # plt.ylabel('Loss')
+    # plt.legend()
+    # plt.show()
 
 
-    model.save(filepath=r'.\model\lego.keras')
-    print('Modello salvato')
+    # model.save(filepath=r'.\model\lego.keras')
+    # print('Modello salvato')
     
+    model = load_model(r'./model/lego.keras')
 
-    #model = load_model(r'./model/lego.keras')
+    # print(type(model))
+    # print(train_set.image_shape)
+    # print(test_set.image_shape)
+    # print(valid_set.image_shape)
 
-    print(type(model))
-    print(train_set.image_shape)
-    print(test_set.image_shape)
-    print(valid_set.image_shape)
+    # # aggiunge la label di ogni classe in un array 
+    # class_names =[]
+    # for nome_cartella in os.listdir(r'Data\Train_set'):
+    #     class_names.append(nome_cartella)
+    # # iteratore = iter(train_set)
+    # # image ,label = next(iteratore)
+    # # # print('image',image)
+    # # # print('label',label)
 
-    # aggiunge la label di ogni classe in un array 
-    class_names =[]
-    for nome_cartella in os.listdir(r'Data\Train_set'):
-        class_names.append(nome_cartella)
-    # iteratore = iter(train_set)
-    # image ,label = next(iteratore)
-    # # print('image',image)
-    # # print('label',label)
-
-    (x_train, y_train), (x_test, y_test) = train_test_split(train_set,test_set,shuffle=True,test_size=train_test_split_ratio,stratify=class_names, random_state=42)
+    # train_set.numpy
+    # (x_train, y_train), (x_test, y_test) = train_test_split(train_set,test_set,shuffle=True,test_size=train_test_split_ratio,stratify=class_names, random_state=42)
     
-    images = np.concatenate([batch for batch in x_test], axis=0)
-    labels = np.concatenate([batch for batch in y_test], axis=0)
+    # images = np.concatenate([batch for batch in x_test], axis=0)
+    # labels = np.concatenate([batch for batch in y_test], axis=0)
 
-    print("Images shape:", images.shape)
-    print("Labels shape:", labels.shape)
+    # print("Images shape:", images.shape)
+    # print("Labels shape:", labels.shape)
 
-    # y_hat = model.predict(images)
-    # print("Predictions:", y_hat)
+    # # y_hat = model.predict(images)
+    # # print("Predictions:", y_hat)
 
 
-    for images, labels in zip(images,labels):
-        y_hat = model.predict(images)
-        print("Predictions:\n", y_hat)
-        print("True Labels:\n", labels)
+    # for images, labels in zip(images,labels):
+    #     y_hat = model.predict(images)
+    #     print("Predictions:\n", y_hat)
+    #     print("True Labels:\n", labels)
 
-    plt.figure(figsize=(10, 10))
+    # plt.figure(figsize=(10, 10))
 
-    for images, labels in zip(images,labels):   
-        y_hat = model.predict(images)
-        for i in range(9):
-            ax = plt.subplot(3, 3, i + 1)
-            plt.imshow(images[i].astype("uint8"), cmap='gray')
-            plt.title(f"Pred: {class_names[np.argmax(y_hat[i])]} \n True: {class_names[np.argmax(labels[i])]}")
-            plt.axis("off")
+    # for images, labels in zip(images,labels):   
+    #     y_hat = model.predict(images)
+    #     for i in range(9):
+    #         ax = plt.subplot(3, 3, i + 1)
+    #         plt.imshow(images[i].astype("uint8"), cmap='gray')
+    #         plt.title(f"Pred: {class_names[np.argmax(y_hat[i])]} \n True: {class_names[np.argmax(labels[i])]}")
+    #         plt.axis("off")
             
-    plt.show()
+    # plt.show()
     
 
+    y_hat = model.predict(test_set)
+    print("Predictions:\n", y_hat)
+    
+    loss,accuracy = model.evaluate(test_set)
+    print(f"Loss: {loss}")
+    print(f"Accuracy: {accuracy}")

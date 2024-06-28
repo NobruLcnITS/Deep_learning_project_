@@ -6,6 +6,7 @@ from keras.models import load_model
 import numpy as np
 import pandas as pd
 from keras.preprocessing.image import ImageDataGenerator
+from sklearn.metrics import ConfusionMatrixDisplay, confusion_matrix
 import tensorflow as tf
 from sklearn.model_selection import train_test_split
 import os 
@@ -139,6 +140,32 @@ if __name__ == '__main__':
     
     model = load_model(r'./model/lego.keras')
 
+    # etichette previste
+    y_hat_pre = model.predict(test_set)
+    print("Predictions:\n", y_hat_pre)
+    
+    y_hat = np.argmax(y_hat_pre, axis=1)
+    print("Predictions:\n", y_hat)
+    
+    print(y_hat.shape)
+    
+    #etichette reali 
+    y_true = train_set.classes
+    
+    
+    loss,accuracy = model.evaluate(test_set)
+    print(f"Loss: {loss}")
+    print(f"Accuracy: {accuracy}")
+    
+    # Da qui in poi solo grafici 
+    cm = confusion_matrix(y_true, y_hat)
+
+    # Visualizzazione della matrice di confusione
+    disp = ConfusionMatrixDisplay(confusion_matrix=cm, display_labels=train_set.classes.keys())
+    disp.plot(cmap=plt.cm.Blues)
+    plt.show()
+    
+
     # print(type(model))
     # print(train_set.image_shape)
     # print(test_set.image_shape)
@@ -148,16 +175,9 @@ if __name__ == '__main__':
     # class_names =[]
     # for nome_cartella in os.listdir(r'Data\Train_set'):
     #     class_names.append(nome_cartella)
-    # # iteratore = iter(train_set)
-    # # image ,label = next(iteratore)
-    # # # print('image',image)
-    # # # print('label',label)
-
-    # train_set.numpy
-    # (x_train, y_train), (x_test, y_test) = train_test_split(train_set,test_set,shuffle=True,test_size=train_test_split_ratio,stratify=class_names, random_state=42)
     
-    # images = np.concatenate([batch for batch in x_test], axis=0)
-    # labels = np.concatenate([batch for batch in y_test], axis=0)
+    # images = np.concatenate([batch[0] for batch in test_set], axis=0)
+    # labels = np.concatenate([batch[1] for batch in test_set], axis=0)
 
     # print("Images shape:", images.shape)
     # print("Labels shape:", labels.shape)
@@ -183,10 +203,3 @@ if __name__ == '__main__':
             
     # plt.show()
     
-
-    y_hat = model.predict(test_set)
-    print("Predictions:\n", y_hat)
-    
-    loss,accuracy = model.evaluate(test_set)
-    print(f"Loss: {loss}")
-    print(f"Accuracy: {accuracy}")

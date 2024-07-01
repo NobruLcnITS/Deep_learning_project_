@@ -19,7 +19,7 @@ if __name__ == '__main__':
     test_set_path = r"./Data/Test_set"
     valid_set_path = r"./Data/Val_set"
     
-    image_size = (300, 300)
+    image_size = (400, 400)
     batch_size = 32
     validation_split = 0.2
     trainin_split = 0.8
@@ -75,7 +75,7 @@ if __name__ == '__main__':
     kernel_size = (3,3)
 
     model = Sequential([
-        Conv2D(filters=16, kernel_size=kernel_size, activation='relu', input_shape=(300, 300, 1)),
+        Conv2D(filters=16, kernel_size=kernel_size, activation='relu', input_shape=(400, 400, 1)),
         MaxPooling2D(2,2),
         
         Conv2D(filters=32, kernel_size=kernel_size, activation='relu'),

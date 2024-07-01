@@ -16,7 +16,7 @@ if __name__ == '__main__':
     test_set_path = r"./Data/Test_set"
     valid_set_path = r"./Data/Val_set"
     
-    image_size = (300, 300)
+    image_size = (400, 400)
     batch_size = 32
     
     datagen_2 = ImageDataGenerator(rescale=1./255)

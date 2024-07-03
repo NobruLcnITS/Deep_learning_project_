@@ -24,6 +24,8 @@ ids = df_selected.index.values
 
 #print(labels)
 
+# creazione dataset con le sottocartelle come classi per ogni tipo di brick
+
 for label,id in zip(labels,ids):
     os.makedirs(f"{percorso_dataset_corretto}/{id} {label}", exist_ok=True)
 
@@ -43,8 +45,8 @@ print(cout)
 # creazione delle cartelle train e test
    
 train_size = 0.8
-test_size = 0.15
-validation_size = 0.2
+test_size = 0.1
+validation_size = 0.1
 
 
 for label,id in zip(labels,ids):
@@ -60,16 +62,13 @@ for nome_cartella in os.listdir(percorso_dataset_train):
             shutil.copy(f"{percorso_dataset_corretto}/{nome_cartella}/{nome_file}", f"{percorso_dataset_train}/{nome_cartella}")
             
     # splitta il test              
-    for nome_file in immagini[int(len(immagini)*test_size):]:
+    for nome_file in immagini[int(len(immagini)*train_size):int(len(immagini)*(1-test_size))]:
             shutil.copy(f"{percorso_dataset_corretto}/{nome_cartella}/{nome_file}", f"{percorso_dataset_test}/{nome_cartella}")
+
+    # splitta il validation  
+    for nome_file in immagini[int(len(immagini)*(1-validation_size)):]:
+            shutil.copy(f"{percorso_dataset_corretto}/{nome_cartella}/{nome_file}", f"{percorso_dataset_val}/{nome_cartella}")
     
-# splitta il validation
-for nome_cartella in os.listdir(percorso_dataset_test):
-    immagini = os.listdir(f"{percorso_dataset_test}/{nome_cartella}")
-    for nome_file in immagini[:int(len(immagini)*validation_size)]:
-            
-            shutil.copy(f"{percorso_dataset_test}/{nome_cartella}/{nome_file}", f"{percorso_dataset_val}/{nome_cartella}")
-            os.remove(f"{percorso_dataset_test}/{nome_cartella}/{nome_file}")     
 
 # conta quante immagini ci sono per ogni suddivisione
 count = 0

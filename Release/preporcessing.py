@@ -20,31 +20,31 @@ print(df_selected)
 labels = df_selected['Description']
 ids = df_selected.index.values
 
-# #print(len(labels),len(ids))
+#print(len(labels),len(ids))
 
-# #print(labels)
+#print(labels)
 
-# for label,id in zip(labels,ids):
-#     os.makedirs(f"{percorso_dataset_corretto}/{id} {label}", exist_ok=True)
+for label,id in zip(labels,ids):
+    os.makedirs(f"{percorso_dataset_corretto}/{id} {label}", exist_ok=True)
 
-# for nome_cartella in os.listdir(percorso_dataset_corretto):
-#     for nome_file in os.listdir(f"{percorso_dataset}"):
+for nome_cartella in os.listdir(percorso_dataset_corretto):
+    for nome_file in os.listdir(f"{percorso_dataset}"):
         
-#         if nome_cartella in nome_file:
-#             shutil.copy(f"{percorso_dataset}/{nome_file}", f"{percorso_dataset_corretto}/{nome_cartella}")
+        if nome_cartella in nome_file:
+            shutil.copy(f"{percorso_dataset}/{nome_file}", f"{percorso_dataset_corretto}/{nome_cartella}")
             
     
-# # conta qunate sottocartelle ci sono nel datset corretto
-# cout= len(os.listdir(percorso_dataset_corretto))
+# conta qunate sottocartelle ci sono nel datset corretto
+cout= len(os.listdir(percorso_dataset_corretto))
 
-# print(cout)
+print(cout)
 
 
 # creazione delle cartelle train e test
    
-train_size = 0.6
-test_size = 0.4
-validation_size = 0.5
+train_size = 0.8
+test_size = 0.15
+validation_size = 0.2
 
 
 for label,id in zip(labels,ids):

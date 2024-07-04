@@ -8,11 +8,11 @@ import shutil
 df = pd.read_csv(r'./Data\validation.csv', header=0)
 
 
-percorso_dataset = "Data\dataset"
-percorso_dataset_corretto = "Data\Dataset_corretto"
-percorso_dataset_train = "Data\Train_set"
-percorso_dataset_test = "Data\Test_set"
-percorso_dataset_val = "Data\Val_set"
+percorso_dataset = r"./Data\dataset"
+percorso_dataset_corretto = r"./Data\Dataset_corretto"
+percorso_dataset_train = r"./Data\Train_set"
+percorso_dataset_test = r"./Data\Test_set"
+percorso_dataset_val = r"./Data\Val_set"
 
 df_selected = df.groupby('Id').first()
 print(df_selected)

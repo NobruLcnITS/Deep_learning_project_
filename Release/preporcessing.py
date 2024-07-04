@@ -5,7 +5,7 @@ import os
 import shutil
 
 # Suddivisione del dataset in sottocartelle per le classi
-df = pd.read_csv(r'./Data\validation.csv', header=0)
+df = pd.read_csv(r'./validation.csv', header=0)
 
 
 percorso_dataset = r"./Data\dataset"

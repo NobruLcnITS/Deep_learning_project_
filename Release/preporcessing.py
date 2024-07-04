@@ -20,9 +20,9 @@ print(df_selected)
 labels = df_selected['Description']
 ids = df_selected.index.values
 
-#print(len(labels),len(ids))
+# print(len(labels),len(ids))
 
-#print(labels)
+# print(labels)
 
 # creazione dataset con le sottocartelle come classi per ogni tipo di brick
 
@@ -72,6 +72,7 @@ for nome_cartella in os.listdir(percorso_dataset_train):
 
 # conta quante immagini ci sono per ogni suddivisione
 count = 0
+
 print('TRAIN')
 for nome_cartella in os.listdir(percorso_dataset_train):
     for nome_file in os.listdir(f"{percorso_dataset_train}/{nome_cartella}"):
